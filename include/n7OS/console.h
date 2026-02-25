@@ -3,9 +3,12 @@
 
 #include <inttypes.h>
 
+/* Width of the screen in text mode (columns) */
 #define VGA_WIDTH 80
+/* Height of the screen in text mode (rows) */
 #define VGA_HEIGHT 25
 
+/* Base address of VGA text buffer in memory */
 #define SCREEN_ADDR 0xB8000
 
 #define PORT_CMD  0x3D4
@@ -14,6 +17,7 @@
 #define CMD_HIGH  0xE
 #define CMD_LOW   0xF
 
+/* VGA Color Definitions */
 #define BLACK   0x0
 #define BLUE    0x1
 #define GREEN   0x2
@@ -31,17 +35,29 @@
 #define YELLOW  0xE
 #define WHITE   0xF
 
-// Character color: blink|back|text
+/* Character Attribute Configuration */
 #define BLINK   (0<<7)
 #define BACK    (BLACK<<4)
-#define TEXT    WHITE 
+#define TEXT    GREEN 
 #define CHAR_COLOR (BLINK|BACK|TEXT)
 
+/**
+ * @brief Initializes the console subsystem.
+ */
 void init_console();
 
-/*
- * This is the function called by printf to send its output to the screen. You
- * have to implement it in the kernel and in the user program.
+/**
+ * @brief Outputs a byte to the screen.
+ * 
+ * @param c Character to write
+ */
+void console_putchar(const char c);
+
+/**
+ * @brief Outputs a sequence of bytes to the screen.
+ * 
+ * @param s Pointer to the character buffer
+ * @param len Number of bytes to write
  */
 void console_putbytes(const char *s, int len);
 
