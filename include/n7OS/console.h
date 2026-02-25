@@ -56,9 +56,27 @@ void console_putchar(const char c);
 /**
  * @brief Outputs a sequence of bytes to the screen.
  * 
- * @param s Pointer to the character buffer
- * @param len Number of bytes to write
+ * @param s Pointer to the character buffer.
+ * @param len Number of bytes to write.
  */
 void console_putbytes(const char *s, int len);
+
+/**
+ * @brief Puts the cursor at the (x,y) position.
+ * 
+ * @param x absciss.
+ * @param y ordinate.
+ */
+void console_set_cursor(uint16_t x, uint16_t y);
+
+/**
+ * @brief Updates the hardware cursor to the current position 'pos'.
+ */
+void console_update_cursor();
+
+/**
+ * @brief Clear the screen and set the current position to the beginning.
+ */
+void console_clear_screen();
 
 #endif

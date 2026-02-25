@@ -1,4 +1,5 @@
 #include <n7OS/console.h>
+#include <n7OS/cpu.h>
 #include <../include/debug.h>
 
 /* Variable to stock the screen adress */
@@ -9,8 +10,37 @@ uint16_t pos;
 void init_console() {
     // Set the pointer of the screen
     scr_tab= (uint16_t *) SCREEN_ADDR;
-    // Initilisation of the position.
+    // Clear the screen
+    console_clear_screen();
+    printf("Hello World!\n\tCaca");
+}
+
+void console_clear_screen() {
+    for (uint16_t i = 0u; i < VGA_WIDTH * VGA_HEIGHT; i++) {
+        scr_tab[i] = CHAR_COLOR << 8 | ' ';
+    }
     pos = 0u;
+    console_update_cursor();
+}
+
+void console_set_cursor(uint16_t x, uint16_t y) {
+    // Update the pos variable
+    pos = y * VGA_WIDTH + x;
+    // Update the hardware cursor
+    uint16_t cursor_pos = pos;
+    outb(PORT_CMD, CMD_HIGH);
+    outb(PORT_DATA, (cursor_pos >> 8) & 0xFF);
+    outb(PORT_CMD, CMD_LOW);
+    outb(PORT_DATA, cursor_pos & 0xFF);
+}
+
+void console_update_cursor() {
+    // Update the hardware cursor
+    uint16_t cursor_pos = pos;
+    outb(PORT_CMD, CMD_HIGH);
+    outb(PORT_DATA, (cursor_pos >> 8) & 0xFF);
+    outb(PORT_CMD, CMD_LOW);
+    outb(PORT_DATA, cursor_pos & 0xFF);
 }
 
 void console_putchar(const char c) {
@@ -42,16 +72,14 @@ void console_putchar(const char c) {
     }
     // Form Feed
     else if (c == '\f') {
-        for (uint16_t i = 0u; i < (VGA_WIDTH * VGA_HEIGHT); i ++) {
-            scr_tab[i] = CHAR_COLOR<<8 | ' ';
-        }
-        pos = 0u;
+        console_clear_screen();
     }
-
     // Ensure pos does not overflow
     if (pos >= VGA_WIDTH * VGA_HEIGHT) {
         pos = (VGA_HEIGHT - 1) * VGA_WIDTH;
     }
+    //Update the cursor
+    console_update_cursor();
 }
 
 void console_putbytes(const char *s, int len) {
