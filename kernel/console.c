@@ -7,40 +7,40 @@ uint16_t *scr_tab;
 uint16_t pos;
 
 void init_console() {
-    /* Set the pointer of the screen. */
+    // Set the pointer of the screen
     scr_tab= (uint16_t *) SCREEN_ADDR;
-    /* Initilisation of the position. */
+    // Initilisation of the position.
     pos = 0u;
 }
 
 void console_putchar(const char c) {
-    /* ASCII Character */
+    // ASCII Character
     if ((c > 31u) && (c < 127u)) { 
         scr_tab[pos]= CHAR_COLOR<<8 | c;
         pos++;
     }
-    /* Line Feed */
+    // Line Feed
     else if (c == '\n') {
         pos += (VGA_WIDTH - (pos % VGA_WIDTH));
     }
-    /* Carriage Return */
+    // Carriage Return 
     else if (c == '\r') {
         pos -= (pos % VGA_WIDTH);
     }
-    /* Horizontal Tab */
+    // Horizontal Tab 
     else if (c == '\t') {
         for (uint8_t i = 0u; i < 8u; i++) {
             scr_tab[pos] = CHAR_COLOR<<8 | ' ';
             pos++;
         }
     }
-    /* Backspace */
+    // Backspace
     else if (c == '\b') {
         if (pos > 0u) {
             pos--;
         }
     }
-    /* Form Feed */
+    // Form Feed
     else if (c == '\f') {
         for (uint16_t i = 0u; i < (VGA_WIDTH * VGA_HEIGHT); i ++) {
             scr_tab[i] = CHAR_COLOR<<8 | ' ';
@@ -48,7 +48,7 @@ void console_putchar(const char c) {
         pos = 0u;
     }
 
-    /* Ensure pos does not overflow */
+    // Ensure pos does not overflow
     if (pos >= VGA_WIDTH * VGA_HEIGHT) {
         pos = (VGA_HEIGHT - 1) * VGA_WIDTH;
     }
