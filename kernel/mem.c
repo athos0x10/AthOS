@@ -1,5 +1,15 @@
 #include <n7OS/mem.h>
 
+/* Mise en place de l'utilisation Bitmap */
+
+/* Taille du Bitmap */
+//const uint32_t SIZE = PAGE_SIZE / 32u;
+
+/* Bitmap */
+//uint32_t free_page_bitmap_table[SIZE] = {0u};
+
+/* Nombre de page alloué*/
+
 /**
  * @brief Marque la page allouée
  * 
@@ -9,6 +19,7 @@
  */
 void setPage(uint32_t addr) {
 
+    //free_page_bitmap_table[0] = free_page_bitmap_table[0] | (1 << addr);
 }
 
 /**

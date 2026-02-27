@@ -12,7 +12,7 @@ void init_console() {
     scr_tab= (uint16_t *) SCREEN_ADDR;
     // Clear the screen
     console_clear_screen();
-    printf("Hello World!\n\tCaca");
+    printf("Hello World!\n\tTest\nTest\nTest\nTestbbbbb\nbaaa");
 }
 
 void console_clear_screen() {
