@@ -71,4 +71,16 @@ void console_update_cursor();
  */
 void console_clear_screen();
 
+/**
+ * @brief Control and compute position in the screen.
+ * Avoid overflow for row or column and call scroll
+ * if we are at the end of the screen.
+ */
+void console_update_pos();
+
+/**
+ * @brief Outputs a tabulation without going on the next row.
+ */
+void console_put_tab();
+
 #endif
