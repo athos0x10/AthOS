@@ -62,14 +62,6 @@ void console_putchar(const char c);
 void console_putbytes(const char *s, int len);
 
 /**
- * @brief Puts the cursor at the (x,y) position.
- * 
- * @param x absciss.
- * @param y ordinate.
- */
-void console_set_cursor(uint16_t x, uint16_t y);
-
-/**
  * @brief Updates the hardware cursor to the current position 'pos'.
  */
 void console_update_cursor();
