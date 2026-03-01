@@ -4,79 +4,73 @@
 
 /* Variable to stock the screen adress */
 uint16_t *scr_tab;
-/* Actual position in the screen (cursor) */
-uint16_t pos;
+/* Actual lign in the screen */
+uint16_t lign;
+/* Actual column in the screen */
+uint16_t column;
 
 void init_console() {
     // Set the pointer of the screen
     scr_tab= (uint16_t *) SCREEN_ADDR;
     // Clear the screen
     console_clear_screen();
-    printf("Hello World!\n\tTest\nTest\nTest\nTestbbbbb\nbaaa");
+    // Init of lign and column
+    lign = 0u;
+    column = 0u;
+    // Set the cursor position
+    console_update_cursor();
 }
 
 void console_clear_screen() {
     for (uint16_t i = 0u; i < VGA_WIDTH * VGA_HEIGHT; i++) {
+        // Replace the actual value by a space
         scr_tab[i] = CHAR_COLOR << 8 | ' ';
     }
-    pos = 0u;
-    console_update_cursor();
-}
-
-void console_set_cursor(uint16_t x, uint16_t y) {
-    // Update the pos variable
-    pos = y * VGA_WIDTH + x;
-    // Update the hardware cursor
-    uint16_t cursor_pos = pos;
-    outb(PORT_CMD, CMD_HIGH);
-    outb(PORT_DATA, (cursor_pos >> 8) & 0xFF);
-    outb(PORT_CMD, CMD_LOW);
-    outb(PORT_DATA, cursor_pos & 0xFF);
 }
 
 void console_update_cursor() {
     // Update the hardware cursor
-    uint16_t cursor_pos = pos;
-    outb(PORT_CMD, CMD_HIGH);
-    outb(PORT_DATA, (cursor_pos >> 8) & 0xFF);
-    outb(PORT_CMD, CMD_LOW);
-    outb(PORT_DATA, cursor_pos & 0xFF);
+    uint16_t cursor_pos = (lign * VGA_WIDTH) + column;
+    outb(CMD_LOW, PORT_CMD);
+    outb(cursor_pos & 255, PORT_DATA);
+    outb(CMD_HIGH, PORT_CMD);
+    outb(cursor_pos >> 8, PORT_DATA);
 }
 
 void console_putchar(const char c) {
     // ASCII Character
     if ((c > 31u) && (c < 127u)) { 
-        scr_tab[pos]= CHAR_COLOR<<8 | c;
-        pos++;
+        scr_tab[lign]= CHAR_COLOR<<8 | c;
+        lign++;
     }
     // Line Feed
     else if (c == '\n') {
-        pos += (VGA_WIDTH - (pos % VGA_WIDTH));
+        lign += (VGA_WIDTH - (lign % VGA_WIDTH));
     }
     // Carriage Return 
     else if (c == '\r') {
-        pos -= (pos % VGA_WIDTH);
+        lign -= (lign % VGA_WIDTH);
     }
     // Horizontal Tab 
     else if (c == '\t') {
         for (uint8_t i = 0u; i < 8u; i++) {
-            scr_tab[pos] = CHAR_COLOR<<8 | ' ';
-            pos++;
+            scr_tab[lign] = CHAR_COLOR<<8 | ' ';
+            lign++;
         }
     }
     // Backspace
     else if (c == '\b') {
-        if (pos > 0u) {
-            pos--;
+        if (lign > 0u) {
+            lign--;
         }
     }
     // Form Feed
     else if (c == '\f') {
         console_clear_screen();
     }
-    // Ensure pos does not overflow
-    if (pos >= VGA_WIDTH * VGA_HEIGHT) {
-        pos = (VGA_HEIGHT - 1) * VGA_WIDTH;
+    // Ensure lign does not overflow
+    if (lign >= VGA_WIDTH * VGA_HEIGHT) {
+        lign = (VGA_HEIGHT - 1) * VGA_WIDTH;
     }
     //Update the cursor
     console_update_cursor();
