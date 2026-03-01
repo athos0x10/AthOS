@@ -1,15 +1,15 @@
 # Compatible macOS (Homebrew) + Linux
 OS := $(shell uname -s)
 
-# Si x86_64-elf-gcc existe, on l'utilise
-ifneq ($(shell which x86_64-elf-gcc 2>/dev/null),)
-    PREFIX := x86_64-elf-
+# Si i686-elf-gcc existe, on l'utilise
+ifneq ($(shell which i686-elf-gcc 2>/dev/null),)
+    PREFIX := i686-elf-
 # Sinon si i386-elf-gcc existe on l'utilise
 else ifneq ($(shell which i386-elf-gcc 2>/dev/null),)
     PREFIX := i386-elf-
 # Sinon erreur
 else
-    $(error No ELF cross-compiler found. Install x86_64-elf-gcc or i386-elf-gcc)
+    PREFIX :=
 endif
 
 GCC_PATH := $(shell which $(PREFIX)gcc)
