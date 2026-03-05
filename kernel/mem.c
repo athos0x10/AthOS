@@ -2,13 +2,8 @@
 
 /* Mise en place de l'utilisation Bitmap */
 
-/* Taille du Bitmap */
-//const uint32_t SIZE = PAGE_SIZE / 32u;
-
 /* Bitmap */
-//uint32_t free_page_bitmap_table[SIZE] = {0u};
-
-/* Nombre de page alloué*/
+uint32_t free_page_bitmap_table[BITMAP_SIZE] = {0u};
 
 /**
  * @brief Marque la page allouée
@@ -18,8 +13,17 @@
  * @param addr Adresse de la page à allouer
  */
 void setPage(uint32_t addr) {
+    // Récupère le numéro de page global
+    uint32_t num_page = addr / PAGE_SIZE;
 
-    //free_page_bitmap_table[0] = free_page_bitmap_table[0] | (1 << addr);
+    // Trouve dans quel entier se trouve ce bit
+    uint32_t addr_index = num_page / 32u;
+
+    // Trouve la position du bit (0 à 31) au sein de cet entier
+    uint32_t bit_index = addr_index % 32u;
+
+    // Marque la page comme allouée (mise à 1)
+    free_page_bitmap_table[addr_index] |=  (1u << bit_index);
 }
 
 /**
@@ -30,7 +34,17 @@ void setPage(uint32_t addr) {
  * @param addr Adresse de la page à libérer
  */
 void clearPage(uint32_t addr) {
+    // Récupère le numéro de page global
+    uint32_t num_page = addr / PAGE_SIZE;
 
+    // Trouve dans quel entier se trouve ce bit
+    uint32_t addr_index = num_page / 32u;
+
+    // Trouve la position du bit (0 à 31) au sein de cet entier
+    uint32_t bit_index = addr_index % 32u;
+
+    // Libère la page comme allouée (mise à 0)
+    free_page_bitmap_table[addr_index] &=  ~(1u << bit_index);
 }
 
 /**
@@ -39,8 +53,25 @@ void clearPage(uint32_t addr) {
  * @return uint32_t Adresse de la page sélectionnée
  */
 uint32_t findfreePage() {
-    uint32_t adresse= 0x0;
+    uint32_t adresse = 0xFFFFFFFF;
+    // Parcours sur le bitmap
+    for (uint32_t i = 0u; i < BITMAP_SIZE; i++) {
 
+        //On regarde si le bloc à une page libre
+        if (free_page_bitmap_table[i] != 0xFFFFFFFF) {
+
+            // Parcours sur les bits pour trouver la première page libre
+            for (uint32_t j = 0u; j < 32u; j++) {
+                // Regarde si la page du bit j est libre
+                if (!(free_page_bitmap_table[i] & (1u << j))) {
+                    //Calcul de l'adresse globale associée
+                    adresse = (i * 32u + j)  * PAGE_SIZE;
+                    return adresse;
+                }
+            }
+        }
+    }
+    // Mémoire pleine
     return adresse;
 }
 

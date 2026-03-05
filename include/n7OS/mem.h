@@ -23,6 +23,22 @@
 #define PAGE_SIZE 0x1000
 
 /**
+ * @brief Nombre total de pages en mémoire.
+ * 
+ * Calculé comme (Dernière adresse + 1) / Taille d'une page.
+ * Pour 16Mo : 0x1000000 / 0x1000 = 4096 pages.
+ */
+#define NB_PAGES ((LAST_MEMORY_INDEX + 1) / PAGE_SIZE)
+
+/**
+ * @brief Taille du Bitmap.
+ * 
+ * Un uint32_t contient 32 bits, donc 32 pages.
+ * 4096 / 32 = 128 entrées.
+ */
+#define BITMAP_SIZE (NB_PAGES / 32u)
+
+/**
  * @brief Marque la page allouée.
  * 
  * Lorsque la page a été choisie, cette fonction permet de la marquer allouée.
