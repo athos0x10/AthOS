@@ -1,9 +1,10 @@
 #include <n7OS/mem.h>
+#include <stdio.h>
 
 /* Mise en place de l'utilisation Bitmap */
 
 /* Bitmap */
-uint32_t free_page_bitmap_table[BITMAP_SIZE] = {0u};
+uint32_t free_page_bitmap_table[BITMAP_SIZE];
 
 /**
  * @brief Marque la page allouée
@@ -80,7 +81,10 @@ uint32_t findfreePage() {
  * 
  */
 void init_mem() {
-
+    // Mise à 0 de tout le bitmap
+    for (uint32_t i = 0u; i < BITMAP_SIZE; i++) {
+        free_page_bitmap_table[i] = 0u;
+    }
 }
 
 /**
@@ -88,5 +92,13 @@ void init_mem() {
  * 
  */
 void print_mem() {
+    uint32_t bitmap_case;
+
+    // Affiche chaque case du bitmap
+    for (uint32_t i = 0u; i < BITMAP_SIZE; i++) {
+        uint32_t bitmap_case = free_page_bitmap_table[i];
+        printf("Bitmap[%3u] = 0x%08X\n", i, bitmap_case);
+    }
+
     
 }
