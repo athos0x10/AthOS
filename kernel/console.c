@@ -38,6 +38,29 @@ void console_update_cursor() {
     outb(cursor_pos >> 8, PORT_DATA);
 }
 
+void console_scroll() {
+    uint16_t screen_pos;
+
+    // Move up all the row and erase the first one
+    for (uint8_t nrow = 0u; nrow < VGA_HEIGHT; nrow++) {
+        for (uint8_t ncolumn = 0u; ncolumn < VGA_WIDTH; ncolumn++) {
+            screen_pos = ((VGA_WIDTH * nrow) + ncolumn);
+
+            // Put space at the last line
+            if (nrow == VGA_HEIGHT -1) {
+                scr_tab[screen_pos]= CHAR_COLOR<<8 | ' ';
+            } 
+            // Otherwise we move the character
+            else {
+                scr_tab[screen_pos] = scr_tab[((VGA_WIDTH * (nrow + 1)) + ncolumn)];
+            }
+        }
+    }
+    //New values
+    row = VGA_HEIGHT - 1; 
+    column = 0u;
+}
+
 void console_update_pos() {
     // First we check the current column
     if (column == VGA_WIDTH) {
@@ -46,7 +69,7 @@ void console_update_pos() {
     }
     // Then we check the current row
     if (row == VGA_HEIGHT) {
-        //TODO scroll
+        console_scroll();
     }
 }
 

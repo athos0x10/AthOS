@@ -83,4 +83,9 @@ void console_update_pos();
  */
 void console_put_tab();
 
+/**
+ * @brief Erase the first row and write in a new one.
+ */
+void console_scroll();
+
 #endif
