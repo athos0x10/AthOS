@@ -2,6 +2,7 @@
 #include <inttypes.h>
 #include <n7OS/processor_structs.h>
 #include <n7OS/console.h>
+#include <n7OS/mem.h>
 
 void kernel_start(void)
 {
