@@ -99,6 +99,5 @@ void print_mem() {
         uint32_t bitmap_case = free_page_bitmap_table[i];
         printf("Bitmap[%3u] = 0x%08X\n", i, bitmap_case);
     }
-
     
 }
