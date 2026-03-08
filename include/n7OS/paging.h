@@ -8,7 +8,11 @@
 /* Définition de constantes pour simplifier la lecture. */
 #define PRESENT 1
 #define ECRITURE 1
-#define UTILISATEUR 1
+#define NOYAU 0
+
+#define ENTRIES_PER_TABLE    1024      // Nombre de PTE dans une Page Table
+#define ENTRIES_PER_DIR      1024      // Nombre de PDE dans le Page Directory
+#define PT_COVERAGE          0x400000  // Mémoire couverte par une table (4 Mo)
 
 #include <inttypes.h>
 
@@ -23,7 +27,7 @@ typedef struct {
     uint32_t W :     1; //Page accessible en lecture/écriture
     uint32_t U :     1; // Page utilisateur si U==1, noyau sinon
     uint32_t RSVD :  9; //Réservé
-    uint32_t PAGE : 20; // Adresse de la page en mémoire physique
+    uint32_t ADDR : 20; // Adresse de la page en mémoire physique
 } page_repertory_entry_t;
 
 /**
@@ -71,12 +75,42 @@ typedef union {
  */
 typedef PTE * PageTable;
 
+/* Adresse virtuelle. */
+
+/**
+ * @brief Description d'une adresse virtuelle de la mémoire.
+ * 
+ */
+typedef struct {
+    uint32_t IND_PAGE  : 12; 
+    uint32_t IND_TABLE : 10;
+    uint32_t IND_REPER : 10;
+} addr_virtu_struct;
+
+typedef union {
+    addr_virtu_struct struct_value;
+    uint32_t value;
+} addr_virtu_t;
+
+
 /**
  * @brief Cette fonction initialise le répertoire de page, alloue les pages de table du noyau
- *        et active la pagination
+ *        et active la pagination.
  * 
  */
 void initialise_paging();
+
+/**
+ * @brief Cette fonction lance la pagination.
+ * 
+ */
+void start_paging();
+
+/**
+ * @brief Cette fonction alloue une nouvelle table à l'adresse voulue.
+ * @param repertory_idx
+ */
+void allocate_new_table(uint32_t repertory_idx);
 
 /**
  * @brief Cette fonction alloue une page de la mémoire physique à une adresse de la mémoire virtuelle
