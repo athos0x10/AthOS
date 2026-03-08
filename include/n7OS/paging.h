@@ -5,14 +5,55 @@
 #ifndef _PAGING_H
 #define _PAGING_H
 
+/* Définition de constantes pour simplifier la lecture. */
+#define PRESENT 1
+#define ECRITURE 1
+#define UTILISATEUR 1
+
 #include <inttypes.h>
+
+/* Répertoire de page. */
+
+/**
+ * @brief Description d'une ligne du répertoire de page.
+ * 
+ */
+typedef struct {
+    uint32_t P :     1; //Présence de la page en mémoire
+    uint32_t W :     1; //Page accessible en lecture/écriture
+    uint32_t U :     1; // Page utilisateur si U==1, noyau sinon
+    uint32_t RSVD :  9; //Réservé
+    uint32_t PAGE : 20; // Adresse de la page en mémoire physique
+} page_repertory_entry_t;
+
+/**
+ * @brief Une entrée dans le répertoire de page peut être manipulé en utilisant
+ * la structure page_repertory_entry_t ou directement la valeur.
+ */
+typedef union {
+    page_repertory_entry_t page_directory;
+    uint32_t value;
+} PDE; // PDE = Page Directory Entry
+
+/* Une table de répertoire de page (PageDirectory) est un tableau. */
+typedef PDE * PageDirectory;
+
+/* Table de page. */
 
 /**
  * @brief Description d'une ligne de la table de page
  * 
  */
 typedef struct {
-    // a completer
+    uint32_t P :     1; //Présence de la page en mémoire
+    uint32_t W :     1; //Page accessible en lecture/écriture
+    uint32_t U :     1; // Page utilisateur si U==1, noyau sinon
+    uint32_t RSVD1 : 2; // Réservé
+    uint32_t A :     1; // Accessed bit
+    uint32_t D :     1; //Dirty bit
+    uint32_t RSVD2 : 2; // Réservé
+    uint32_t AVAIL : 3;
+    uint32_t PAGE : 20; // Adresse de la table page
 } page_table_entry_t;
 
 /**
