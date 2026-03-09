@@ -17,6 +17,12 @@ Bit :     | 31              16 | 15              0 |
 Contenu : |sélecteur de segment| offset inférieur  |
 */
 
+#define PRESENT 0b10000000
+#define DPL_HIGH 0b00000000
+#define INTERUPT_GATE 0b00000000
+#define INT_GATE32 0b00001110
+
+
 typedef struct {
   uint16_t offset_inf;
   uint16_t sel_segment;
@@ -25,6 +31,12 @@ typedef struct {
   uint16_t offset_sup;
 } idt_entry_t;
 
+/**
+ * @brief Crée une entrée dans la table d'interuption pour une IRQ donnée.
+ * 
+ * @param irq_num Le numéro de l'IRQ.
+ * @param addr L'adresse de la fonction qui gère l'IRQ.
+ */
 void init_irq_entry(int irq_num, uint32_t addr);
 
 #endif
