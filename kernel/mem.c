@@ -1,5 +1,5 @@
 #include <n7OS/mem.h>
-#include <stdio.h>
+#include <../include/debug.h>
 
 /* Mise en place de l'utilisation Bitmap */
 
@@ -21,7 +21,7 @@ void setPage(uint32_t addr) {
     uint32_t addr_index = num_page / 32u;
 
     // Trouve la position du bit (0 à 31) au sein de cet entier
-    uint32_t bit_index = addr_index % 32u;
+    uint32_t bit_index = num_page % 32u;
 
     // Marque la page comme allouée (mise à 1)
     free_page_bitmap_table[addr_index] |=  (1u << bit_index);
@@ -42,7 +42,7 @@ void clearPage(uint32_t addr) {
     uint32_t addr_index = num_page / 32u;
 
     // Trouve la position du bit (0 à 31) au sein de cet entier
-    uint32_t bit_index = addr_index % 32u;
+    uint32_t bit_index = num_page % 32u;
 
     // Libère la page comme allouée (mise à 0)
     free_page_bitmap_table[addr_index] &=  ~(1u << bit_index);
@@ -67,6 +67,7 @@ uint32_t findfreePage() {
                 if (!(free_page_bitmap_table[i] & (1u << j))) {
                     //Calcul de l'adresse globale associée
                     adresse = (i * 32u + j)  * PAGE_SIZE;
+                    setPage(adresse);
                     return adresse;
                 }
             }
