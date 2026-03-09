@@ -20,11 +20,10 @@ void initialise_paging() {
         page_dir[i].value = 0u;
     }
 
-    // Mapping d'une table de page
+    // Mapping d'une table de page (On-Demand paging)
     for (uint32_t i = 0u; i < PT_COVERAGE; i += PAGE_SIZE) { 
         alloc_page_entry(i, 1, 1); 
     }
-
 
     // Chargement du repertoire dans le registre CR3
     __asm__ __volatile__("mov %0, %%cr3" :: "r"(page_dir));
