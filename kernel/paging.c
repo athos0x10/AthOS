@@ -2,6 +2,7 @@
 #include <stddef.h> // nécessaire pour NULL
 #include <n7OS/mem.h>
 #include <n7OS/kheap.h>
+#include <n7OS/processor_structs.h>
 
 //Le répertoire de page
 PageDirectory page_dir;
@@ -24,11 +25,14 @@ void initialise_paging() {
         alloc_page_entry(i, 1, 1); 
     }
 
+
     // Chargement du repertoire dans le registre CR3
     __asm__ __volatile__("mov %0, %%cr3" :: "r"(page_dir));
 
     // Lancement de la pagination (Bit 31 de CR0)
     start_paging();
+
+    setup_base((uint32_t)page_dir);
 }
 
 void start_paging() {
