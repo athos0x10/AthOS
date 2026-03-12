@@ -7,7 +7,16 @@
 
 extern char first_stack[FIRST_STACK_SIZE];
 
-/* The kernel entry point */
+/**
+ * @brief Permet d'activer les interruptions voulues
+ * 
+ */
+void init_our_irq(void);
+
+/**
+ * @brief The kernel entry point.
+ * 
+ */
 void kernel_start(void);
 
 #endif
