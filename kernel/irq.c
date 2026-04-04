@@ -9,7 +9,7 @@ void init_irq_entry(int irq_num, uint32_t addr) {
     // Initialisation des valeurs
     entry->offset_inf = addr & 0xFFFF;
     entry->sel_segment = KERNEL_CS;
-    entry->type_attr = PRESENT | DPL_HIGH | INTERUPT_GATE | INT_GATE32;
+    entry->type_attr = PRESENTI | DPL_HIGH | INTERUPT_GATE | INT_GATE32;
     entry->zero = 0x0;
 	entry->offset_sup = addr >> 16;
 }
