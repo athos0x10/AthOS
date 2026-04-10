@@ -7,19 +7,27 @@
 #include <n7OS/mem.h>
 #include <n7OS/paging.h>
 #include <n7OS/processor_structs.h>
+#include <n7OS/sys.h>
 #include <n7OS/time.h>
+
 extern void init_irq();
 
 void kernel_start(void) {
+  // initialisation de la pile du kernel
   init_kheap();
+  // initialisation de la pagination
   initialise_paging();
+  // initialisation de la console
   init_console();
-
+  // initialisation des appels systemes
+  init_syscall();
+  // initialisation des interruptions
+  init_irq();
+  // initialisation de timer
+  init_timer();
   // lancement des interruptions
   sti();
-  init_irq();
 
-  init_timer();
   /**
   // test de la pagination
   alloc_page_entry(0xA0000000,1,0);
