@@ -9,6 +9,7 @@
 #include <n7OS/processor_structs.h>
 #include <n7OS/sys.h>
 #include <n7OS/time.h>
+#include <n7OS/keyboard.h>
 
 extern void init_irq();
 
@@ -25,6 +26,8 @@ void kernel_start(void) {
   init_irq();
   // initialisation de timer
   init_timer();
+  // initialisation du clavier
+  init_keyboard();
   // lancement des interruptions
   sti();
 
